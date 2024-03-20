@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: bank-app-backend
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/bank-app
+    username: postgres
+    password: 2849141
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    database: postgresql
+    show-sql: true
+    hibernate:
+      ddl-auto: create-drop
