@@ -1,3 +1,6 @@
+server:
+  port: 8081
+
 spring:
   application:
     name: bank-app-backend
@@ -5,7 +8,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/bank-app
     username: postgres
-    password: 2849141
+    password: admin
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -13,3 +16,10 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: create-drop
+
+
+app:
+  security:
+    jwt:
+      expiration: 900000
+      secretKey: 09B63EE1A5DD4AB080610DDA313625F51E64D38BF4710421F95C447EA0CA46C4
