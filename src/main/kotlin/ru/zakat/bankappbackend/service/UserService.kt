@@ -1,5 +1,6 @@
 package ru.zakat.bankappbackend.service
 
+import org.springframework.security.core.Authentication
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
@@ -16,6 +17,10 @@ class UserService(
         return userRepository.findByEmail(username).orElseThrow {
             UsernameNotFoundException("User not found")
         }
+    }
+
+    fun getAuthorizedUser(auth: Authentication): User {
+        return loadUserByUsername(auth.name) as User
     }
 
     fun save(user: User) {
