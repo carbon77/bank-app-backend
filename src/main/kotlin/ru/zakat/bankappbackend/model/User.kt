@@ -15,6 +15,13 @@ data class User (
     var email: String? = null,
     private var password: String? = null,
 
+    @OneToOne(mappedBy = "user", optional = false, cascade = [CascadeType.ALL])
+    @PrimaryKeyJoinColumn
+    var passport: Passport? = null,
+
+    @OneToMany(mappedBy = "user", orphanRemoval = true)
+    var accounts: MutableList<Account> = mutableListOf(),
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "user_id", nullable = false)
