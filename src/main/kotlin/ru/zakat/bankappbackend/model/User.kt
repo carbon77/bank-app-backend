@@ -13,6 +13,9 @@ data class User (
 
     @Column(unique = true)
     var email: String? = null,
+
+    @Column(unique = true)
+    var phoneNumber: String? = null,
     private var password: String? = null,
 
     @OneToOne(mappedBy = "user", optional = false, cascade = [CascadeType.ALL])

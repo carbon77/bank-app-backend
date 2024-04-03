@@ -1,5 +1,6 @@
 package ru.zakat.bankappbackend.controller
 
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.CrossOrigin
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -19,8 +20,9 @@ class AuthController(
     @PostMapping("/register")
     fun register(
         @RequestBody request: RegisterRequest,
-    ): AuthenticationResponse {
-        return authService.register(request)
+    ): ResponseEntity<Map<String, String>> {
+        authService.register(request)
+        return ResponseEntity.ok(mapOf("message" to "Success"))
     }
 
     @PostMapping("/login")

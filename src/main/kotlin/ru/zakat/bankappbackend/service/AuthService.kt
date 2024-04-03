@@ -11,21 +11,24 @@ import ru.zakat.bankappbackend.dao.auth.AuthenticationResponse
 import ru.zakat.bankappbackend.dao.auth.LoginRequest
 import ru.zakat.bankappbackend.dao.auth.RegisterRequest
 import ru.zakat.bankappbackend.model.User
+import ru.zakat.bankappbackend.repository.PassportRepository
 
 @Service
 class AuthService(
+    private val passportRepository: PassportRepository,
     private val userService: UserService,
     private val passwordEncoder: PasswordEncoder,
     private val jwtService: JwtService,
     private val authenticationManager: AuthenticationManager,
 ) {
 
-    fun register(request: RegisterRequest): AuthenticationResponse {
+    fun register(request: RegisterRequest) {
         val user = User(
             firstName = request.firstName,
             lastName = request.lastName,
             email = request.email,
             password = passwordEncoder.encode(request.password),
+            phoneNumber = request.phoneNumber,
         )
 
         try {
@@ -34,8 +37,8 @@ class AuthService(
             throw ResponseStatusException(HttpStatus.BAD_REQUEST, e.message)
         }
 
-        val jwtToken = jwtService.generateToken(user)
-        return AuthenticationResponse(jwtToken)
+        request.passport.user = user
+        passportRepository.save(request.passport)
     }
 
     fun login(request: LoginRequest): AuthenticationResponse {
