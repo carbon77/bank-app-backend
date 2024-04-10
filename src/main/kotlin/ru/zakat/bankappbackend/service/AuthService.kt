@@ -1,6 +1,6 @@
 package ru.zakat.bankappbackend.service
 
-import org.springframework.dao.DataIntegrityViolationException
+import org.springframework.dao.DuplicateKeyException
 import org.springframework.http.HttpStatus
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -12,10 +12,12 @@ import ru.zakat.bankappbackend.dao.auth.LoginRequest
 import ru.zakat.bankappbackend.dao.auth.RegisterRequest
 import ru.zakat.bankappbackend.model.User
 import ru.zakat.bankappbackend.repository.PassportRepository
+import ru.zakat.bankappbackend.repository.UserRepository
 
 @Service
 class AuthService(
     private val passportRepository: PassportRepository,
+    private val userRepository: UserRepository,
     private val userService: UserService,
     private val passwordEncoder: PasswordEncoder,
     private val jwtService: JwtService,
@@ -31,13 +33,26 @@ class AuthService(
             phoneNumber = request.phoneNumber,
         )
 
+        if (userRepository.existsByEmailIgnoreCase(request.email)) {
+            throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Email already exists")
+        }
+
+        if (userRepository.existsByPhoneNumber(request.phoneNumber)) {
+            throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Phone number already exists")
+        }
+
+        if (passportRepository.existsBySeriesAndNumber(request.passport.series, request.passport.number)) {
+            throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Passport already exists")
+        }
+
         try {
-            userService.save(user)
-        } catch (e: DataIntegrityViolationException) {
+            userRepository.save(user)
+        } catch (e: DuplicateKeyException) {
             throw ResponseStatusException(HttpStatus.BAD_REQUEST, e.message)
         }
 
         request.passport.user = user
+
         passportRepository.save(request.passport)
     }
 

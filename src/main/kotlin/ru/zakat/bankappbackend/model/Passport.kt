@@ -5,7 +5,9 @@ import org.hibernate.Hibernate
 import java.util.*
 
 @Entity
-@Table(name = "passports")
+@Table(name = "passports", uniqueConstraints = [
+    UniqueConstraint(columnNames = ["number", "series"])
+])
 data class Passport(
     var number: String? = null,
     var series: String? = null,

@@ -22,8 +22,4 @@ class UserService(
     fun getAuthorizedUser(auth: Authentication): User {
         return loadUserByUsername(auth.name) as User
     }
-
-    fun save(user: User) {
-        userRepository.save(user)
-    }
 }
