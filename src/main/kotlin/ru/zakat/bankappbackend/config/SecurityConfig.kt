@@ -1,12 +1,15 @@
 package ru.zakat.bankappbackend.config
 
+import jakarta.servlet.DispatcherType
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.HttpMethod
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.AuthenticationProvider
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
+import org.springframework.security.config.annotation.web.invoke
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -24,25 +27,25 @@ class SecurityConfig(
 ) {
 
     @Bean
-    fun securityFilterChain(http: HttpSecurity): SecurityFilterChain = http
-        .csrf { it.disable() }
-        .cors { it.disable() }
-        .authorizeHttpRequests {
-            it
-                .requestMatchers(
-                    "/api/auth/**"
-                )
-                .permitAll()
+    fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
+        http.invoke {
+            csrf { disable() }
+            cors { disable() }
+            authorizeRequests {
+                authorize("/api/auth/**", permitAll)
+                authorize({ it.method == HttpMethod.OPTIONS.name() }, permitAll)
+                authorize({ it.dispatcherType == DispatcherType.ERROR }, permitAll)
+                authorize(anyRequest, authenticated)
+            }
+            sessionManagement {
+                sessionCreationPolicy = SessionCreationPolicy.STATELESS
+            }
+            addFilterBefore<UsernamePasswordAuthenticationFilter>(jwtAuthenticationFilter)
+        }
 
-                .anyRequest()
-                .authenticated()
-        }
-        .sessionManagement {
-            it.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-        }
-        .authenticationProvider(authenticationProvider())
-        .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
-        .build()
+        http.authenticationProvider(authenticationProvider())
+        return http.build()
+    }
 
     @Bean
     fun authenticationProvider(): AuthenticationProvider {
