@@ -8,6 +8,11 @@ import org.springframework.security.core.userdetails.UserDetails
 @Entity
 @Table(name = "users")
 data class User (
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id", nullable = false)
+    var id: Long? = null,
+
     var firstName: String? = null,
     var lastName: String? = null,
 
@@ -24,11 +29,6 @@ data class User (
 
     @OneToMany(mappedBy = "user", orphanRemoval = true)
     var accounts: MutableList<Account> = mutableListOf(),
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "user_id", nullable = false)
-    var id: Long? = null,
 ) : UserDetails {
     override fun getAuthorities(): MutableCollection<out GrantedAuthority>? {
         return null

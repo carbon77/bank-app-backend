@@ -1,5 +1,6 @@
 package ru.zakat.bankappbackend.model
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import jakarta.persistence.*
 import org.hibernate.Hibernate
 import java.util.*
@@ -26,6 +27,7 @@ data class Passport(
     @OneToOne
     @MapsId
     @JoinColumn(name = "user_id")
+    @JsonIgnore
     var user: User? = null,
 ) {
     override fun equals(other: Any?): Boolean {
