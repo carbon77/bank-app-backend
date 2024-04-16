@@ -26,8 +26,6 @@ class AuthService(
 
     fun register(request: RegisterRequest) {
         val user = User(
-            firstName = request.firstName,
-            lastName = request.lastName,
             email = request.email,
             password = passwordEncoder.encode(request.password),
             phoneNumber = request.phoneNumber,

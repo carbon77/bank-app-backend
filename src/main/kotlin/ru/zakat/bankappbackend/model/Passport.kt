@@ -13,7 +13,6 @@ data class Passport(
     var number: String? = null,
     var series: String? = null,
     var issueDate: Date? = null,
-    var issuePlace: String? = null,
     var firstName: String? = null,
     var lastName: String? = null,
     var patronimic: String? = null,

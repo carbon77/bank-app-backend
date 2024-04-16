@@ -13,9 +13,6 @@ data class User (
     @Column(name = "user_id", nullable = false)
     var id: Long? = null,
 
-    var firstName: String? = null,
-    var lastName: String? = null,
-
     @Column(unique = true)
     var email: String? = null,
 
@@ -54,6 +51,6 @@ data class User (
 
     @Override
     override fun toString(): String {
-        return this::class.simpleName + "(id = $id , firstName = $firstName , lastName = $lastName , email = $email )"
+        return this::class.simpleName + "(id = $id , firstName = ${passport?.lastName} , lastName = ${passport?.firstName}, email = $email )"
     }
 }
