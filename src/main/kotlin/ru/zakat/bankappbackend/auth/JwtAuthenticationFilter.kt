@@ -1,5 +1,6 @@
 package ru.zakat.bankappbackend.auth
 
+import io.jsonwebtoken.ExpiredJwtException
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
@@ -34,7 +35,14 @@ class JwtAuthenticationFilter(
         }
 
         val jwt: String = authHeader.substring(7)
-        val userEmail: String? = jwtService.extractUsername(jwt)
+
+        val userEmail: String? = try {
+            jwtService.extractUsername(jwt)
+        } catch (e: ExpiredJwtException) {
+            response.sendError(HttpServletResponse.SC_GONE, "Token expired!")
+            return
+        }
+
         if (userEmail != null && SecurityContextHolder.getContext().authentication == null) {
             val user = userService.loadUserByUsername(userEmail)
 
