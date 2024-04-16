@@ -28,6 +28,7 @@ class AccountService(
         account.accountDetails = generateAccountDetails()
         account.user = userService.getAuthorizedUser(auth)
         account.balance = 0.0
+        account.name = req.name
         setExtraFields(account, req)
 
         accountRepository.save(account)
@@ -37,10 +38,10 @@ class AccountService(
 
     private fun setExtraFields(account: Account, req: CreateAccountRequest) {
         if (account is SavingsAccount) {
-            account.rate = req.extraFields?.get("rate") as Double?
+            account.rate = req.extraFields?.get("rate").toString().toDouble()
         } else if (account is CreditAccount) {
-            account.accountLimit = req.extraFields?.get("accountLimit") as Double?
-            account.interestRate = req.extraFields?.get("interestRate") as Double?
+            account.accountLimit = req.extraFields?.get("accountLimit").toString().toDouble()
+            account.interestRate = req.extraFields?.get("interestRate").toString().toDouble()
         }
     }
 

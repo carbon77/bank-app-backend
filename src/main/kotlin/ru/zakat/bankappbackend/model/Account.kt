@@ -13,6 +13,7 @@ open class Account {
     @Column(name = "account_id", nullable = false)
     var id: Long? = null
 
+    var name: String? = null
     var balance: Double? = null
 
     @Enumerated(EnumType.STRING)
