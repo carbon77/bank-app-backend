@@ -1,4 +1,4 @@
-package ru.zakat.bankappbackend.dao
+package ru.zakat.bankappbackend.dto
 
 data class PatchUserRequest(
     var email: String? = null,

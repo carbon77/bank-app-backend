@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
-import ru.zakat.bankappbackend.dao.CreateOperationRequest
-import ru.zakat.bankappbackend.dao.CreateTransferRequest
+import ru.zakat.bankappbackend.dto.CreateOperationRequest
+import ru.zakat.bankappbackend.dto.CreateTransferRequest
 import ru.zakat.bankappbackend.model.operation.Operation
 import ru.zakat.bankappbackend.service.OperationService
 

@@ -7,9 +7,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.web.server.ResponseStatusException
-import ru.zakat.bankappbackend.dao.auth.AuthenticationResponse
-import ru.zakat.bankappbackend.dao.auth.LoginRequest
-import ru.zakat.bankappbackend.dao.auth.RegisterRequest
+import ru.zakat.bankappbackend.dto.auth.AuthenticationResponse
+import ru.zakat.bankappbackend.dto.auth.LoginRequest
+import ru.zakat.bankappbackend.dto.auth.RegisterRequest
 import ru.zakat.bankappbackend.model.User
 import ru.zakat.bankappbackend.repository.PassportRepository
 import ru.zakat.bankappbackend.repository.UserRepository

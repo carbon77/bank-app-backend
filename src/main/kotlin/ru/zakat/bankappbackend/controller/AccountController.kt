@@ -2,8 +2,8 @@ package ru.zakat.bankappbackend.controller
 
 import org.springframework.security.core.Authentication
 import org.springframework.web.bind.annotation.*
-import ru.zakat.bankappbackend.dao.CreateAccountRequest
-import ru.zakat.bankappbackend.dao.CreateAccountResponse
+import ru.zakat.bankappbackend.dto.CreateAccountRequest
+import ru.zakat.bankappbackend.dto.CreateAccountResponse
 import ru.zakat.bankappbackend.model.Account
 import ru.zakat.bankappbackend.service.AccountService
 import ru.zakat.bankappbackend.service.CardService

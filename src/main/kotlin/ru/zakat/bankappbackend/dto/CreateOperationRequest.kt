@@ -1,4 +1,4 @@
-package ru.zakat.bankappbackend.dao
+package ru.zakat.bankappbackend.dto
 
 import com.fasterxml.jackson.databind.JsonNode
 import ru.zakat.bankappbackend.model.operation.OperationType

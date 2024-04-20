@@ -5,8 +5,8 @@ import org.springframework.security.core.Authentication
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.server.ResponseStatusException
-import ru.zakat.bankappbackend.dao.CreateOperationRequest
-import ru.zakat.bankappbackend.dao.CreateTransferRequest
+import ru.zakat.bankappbackend.dto.CreateOperationRequest
+import ru.zakat.bankappbackend.dto.CreateTransferRequest
 import ru.zakat.bankappbackend.model.operation.Operation
 import ru.zakat.bankappbackend.model.operation.OperationCategory
 import ru.zakat.bankappbackend.model.operation.OperationType

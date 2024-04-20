@@ -1,4 +1,4 @@
-package ru.zakat.bankappbackend.dao.auth
+package ru.zakat.bankappbackend.dto.auth
 
 data class LoginRequest(
     val email: String,

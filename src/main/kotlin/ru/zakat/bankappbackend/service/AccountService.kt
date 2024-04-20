@@ -5,8 +5,8 @@ import org.springframework.security.core.Authentication
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.server.ResponseStatusException
-import ru.zakat.bankappbackend.dao.CreateAccountRequest
-import ru.zakat.bankappbackend.dao.CreateAccountResponse
+import ru.zakat.bankappbackend.dto.CreateAccountRequest
+import ru.zakat.bankappbackend.dto.CreateAccountResponse
 import ru.zakat.bankappbackend.model.*
 import ru.zakat.bankappbackend.repository.AccountRepository
 import ru.zakat.bankappbackend.utils.generateRandomString

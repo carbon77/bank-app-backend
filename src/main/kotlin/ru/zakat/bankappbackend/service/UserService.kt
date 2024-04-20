@@ -6,7 +6,7 @@ import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import ru.zakat.bankappbackend.dao.PatchUserRequest
+import ru.zakat.bankappbackend.dto.PatchUserRequest
 import ru.zakat.bankappbackend.model.User
 import ru.zakat.bankappbackend.repository.UserRepository
 

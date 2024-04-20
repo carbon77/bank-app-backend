@@ -1,4 +1,4 @@
-package ru.zakat.bankappbackend.dao
+package ru.zakat.bankappbackend.dto
 
 import ru.zakat.bankappbackend.model.AccountType
 

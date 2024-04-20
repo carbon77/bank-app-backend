@@ -1,4 +1,4 @@
-package ru.zakat.bankappbackend.dao.auth
+package ru.zakat.bankappbackend.dto.auth
 
 import ru.zakat.bankappbackend.model.Passport
 
