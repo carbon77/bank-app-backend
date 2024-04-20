@@ -1,6 +1,9 @@
 package ru.zakat.bankappbackend.model.operation
 
+import com.fasterxml.jackson.databind.JsonNode
+import io.hypersistence.utils.hibernate.type.json.JsonType
 import jakarta.persistence.*
+import org.hibernate.annotations.Type
 import ru.zakat.bankappbackend.model.Account
 import java.util.Date
 
@@ -16,6 +19,10 @@ data class Operation(
     var type: OperationType? = null,
 
     var amount: Double? = null,
+
+    @Type(JsonType::class)
+    @Column(columnDefinition = "jsonb")
+    var extraFields: JsonNode? = null,
 
     @Temporal(TemporalType.TIMESTAMP)
     var createdAt: Date? = null,

@@ -5,3 +5,6 @@ INSERT INTO passports(user_id, number, series, issue_date, first_name, last_name
                       patronimic, department_code, birthday)
 VALUES (1, '4123', '123456', '2022-02-14',
         'Игорь', 'Закатов', 'Сергеевич', '123-456', '2003-08-08');
+
+INSERT INTO operation_categories(name)
+VALUES ('Перевод'), ('Снятие'), ('Пополнение');

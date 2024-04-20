@@ -1,8 +1,10 @@
 package ru.zakat.bankappbackend.service
 
+import org.springframework.http.HttpStatus
 import org.springframework.security.core.Authentication
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.web.server.ResponseStatusException
 import ru.zakat.bankappbackend.dao.CreateAccountRequest
 import ru.zakat.bankappbackend.dao.CreateAccountResponse
 import ru.zakat.bankappbackend.model.*
@@ -15,6 +17,13 @@ class AccountService(
     private val userService: UserService,
     private val cardService: CardService,
 ) {
+
+    @Transactional(readOnly = true)
+    fun findAccountById(accountId: Long): Account {
+        return accountRepository.findById(accountId).orElseThrow {
+            ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found")
+        }
+    }
 
     @Transactional(readOnly = true)
     fun getAuthorizedUserAccounts(auth: Authentication): List<Account> {
