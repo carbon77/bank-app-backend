@@ -1,5 +1,6 @@
 package ru.zakat.bankappbackend.model
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import jakarta.persistence.*
 import org.hibernate.Hibernate
 import org.springframework.security.core.GrantedAuthority
@@ -31,12 +32,19 @@ data class User (
         return null
     }
 
+    @JsonIgnore
     override fun getPassword(): String? = password
+
+    @JsonIgnore
     override fun getUsername(): String? = email
 
+    @JsonIgnore
     override fun isAccountNonExpired(): Boolean = true
+    @JsonIgnore
     override fun isAccountNonLocked(): Boolean = true
+    @JsonIgnore
     override fun isCredentialsNonExpired(): Boolean = true
+    @JsonIgnore
     override fun isEnabled(): Boolean = true
 
     override fun equals(other: Any?): Boolean {

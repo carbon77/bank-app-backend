@@ -51,6 +51,7 @@ class AccountService(
         } else if (account is CreditAccount) {
             account.accountLimit = req.extraFields?.get("accountLimit").toString().toDouble()
             account.interestRate = req.extraFields?.get("interestRate").toString().toDouble()
+            account.balance = req.extraFields?.get("accountLimit").toString().toDouble()
         }
     }
 

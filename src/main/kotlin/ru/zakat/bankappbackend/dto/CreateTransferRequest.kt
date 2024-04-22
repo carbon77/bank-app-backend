@@ -1,11 +1,11 @@
 package ru.zakat.bankappbackend.dto
 
-import com.fasterxml.jackson.databind.JsonNode
+import ru.zakat.bankappbackend.model.operation.OperationField
 
 data class CreateTransferRequest(
     var accountIdFrom: Long,
     var accountIdTo: Long,
     var amount: Double,
-    var extraFieldsFrom: JsonNode? = null,
-    var extraFieldsTo: JsonNode? = null,
+    var extraFieldsFrom: List<OperationField>? = null,
+    var extraFieldsTo: List<OperationField>? = null,
 )
