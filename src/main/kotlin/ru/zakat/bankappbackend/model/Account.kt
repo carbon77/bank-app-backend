@@ -3,6 +3,7 @@ package ru.zakat.bankappbackend.model
 import com.fasterxml.jackson.annotation.JsonIgnore
 import jakarta.persistence.*
 import org.hibernate.Hibernate
+import java.util.*
 
 @Entity
 @Table(name = "accounts")
@@ -18,6 +19,9 @@ open class Account {
 
     @Enumerated(EnumType.STRING)
     var accountType: AccountType? = null
+
+    @Temporal(TemporalType.DATE)
+    var createdAt: Date? = null
 
     @Embedded
     var accountDetails: AccountDetails? = null

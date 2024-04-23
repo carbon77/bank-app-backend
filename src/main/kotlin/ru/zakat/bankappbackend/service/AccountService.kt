@@ -10,6 +10,8 @@ import ru.zakat.bankappbackend.dto.CreateAccountResponse
 import ru.zakat.bankappbackend.model.*
 import ru.zakat.bankappbackend.repository.AccountRepository
 import ru.zakat.bankappbackend.utils.generateRandomString
+import java.time.Instant
+import java.util.*
 
 @Service
 class AccountService(
@@ -38,6 +40,7 @@ class AccountService(
         account.user = userService.getAuthorizedUser(auth)
         account.balance = 0.0
         account.name = req.name
+        account.createdAt = Date.from(Instant.now())
         setExtraFields(account, req)
 
         accountRepository.save(account)
