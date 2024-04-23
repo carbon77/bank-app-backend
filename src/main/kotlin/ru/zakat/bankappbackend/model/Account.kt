@@ -1,6 +1,8 @@
 package ru.zakat.bankappbackend.model
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo
 import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.annotation.ObjectIdGenerators
 import jakarta.persistence.*
 import org.hibernate.Hibernate
 import java.util.*
@@ -8,6 +10,7 @@ import java.util.*
 @Entity
 @Table(name = "accounts")
 @Inheritance(strategy = InheritanceType.JOINED)
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator::class, property = "id")
 open class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

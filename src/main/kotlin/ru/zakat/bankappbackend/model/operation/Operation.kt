@@ -1,12 +1,11 @@
 package ru.zakat.bankappbackend.model.operation
 
-import com.fasterxml.jackson.annotation.JsonIgnore
-import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.annotation.JsonIdentityReference
 import io.hypersistence.utils.hibernate.type.json.JsonType
 import jakarta.persistence.*
 import org.hibernate.annotations.Type
 import ru.zakat.bankappbackend.model.Account
-import java.util.Date
+import java.util.*
 
 @Entity
 @Table(name = "operations")
@@ -30,7 +29,7 @@ data class Operation(
 
     @ManyToOne(cascade = [CascadeType.ALL], optional = false)
     @JoinColumn(name = "account_id", nullable = false)
-    @JsonIgnore
+    @JsonIdentityReference(alwaysAsId = true)
     var account: Account? = null,
 
     @ManyToOne(optional = false)
