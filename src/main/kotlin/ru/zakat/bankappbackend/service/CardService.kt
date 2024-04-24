@@ -51,8 +51,12 @@ class CardService(
         val account = accountRepository.findById(accountId).orElseThrow {
             ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found")
         }
-        val card = cardRepository.findByAccount(account).orElseThrow {
+        val card = cardRepository.findById(cardId).orElseThrow {
             ResponseStatusException(HttpStatus.NOT_FOUND, "Card not found")
+        }
+
+        if (card.account != account) {
+            throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Account doesn't have this card")
         }
         cardRepository.delete(card)
     }

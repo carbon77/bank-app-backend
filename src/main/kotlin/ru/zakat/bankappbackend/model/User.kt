@@ -26,6 +26,7 @@ data class User (
     var passport: Passport? = null,
 
     @OneToMany(mappedBy = "user", orphanRemoval = true)
+    @JsonIgnore
     var accounts: MutableList<Account> = mutableListOf(),
 ) : UserDetails {
     override fun getAuthorities(): MutableCollection<out GrantedAuthority>? {
