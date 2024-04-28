@@ -1,5 +1,6 @@
 package ru.zakat.bankappbackend.controller
 
+import org.springframework.data.repository.query.Param
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.Authentication
 import org.springframework.web.bind.annotation.CrossOrigin
@@ -28,5 +29,12 @@ class UsersController(
     fun patchUser(auth: Authentication, @RequestBody req: PatchUserRequest): ResponseEntity<Any> {
         userService.patchUser(auth, req)
         return ResponseEntity.noContent().build()
+    }
+
+    @GetMapping
+    fun findUser(
+        @Param("bankNumber") bankNumber: String,
+    ): User {
+        return userService.findUser(bankNumber)
     }
 }

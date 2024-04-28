@@ -8,8 +8,10 @@ import org.springframework.web.server.ResponseStatusException
 import ru.zakat.bankappbackend.dto.CreateOperationRequest
 import ru.zakat.bankappbackend.dto.CreateTransferRequest
 import ru.zakat.bankappbackend.model.operation.Operation
+import ru.zakat.bankappbackend.model.operation.OperationField
 import ru.zakat.bankappbackend.model.operation.OperationType
 import ru.zakat.bankappbackend.repository.AccountRepository
+import ru.zakat.bankappbackend.repository.CardRepository
 import ru.zakat.bankappbackend.repository.OperationCategoryRepository
 import ru.zakat.bankappbackend.repository.OperationRepository
 import java.time.Instant
@@ -21,6 +23,7 @@ class OperationService(
     private val operationRepository: OperationRepository,
     private val categoryRepository: OperationCategoryRepository,
     private val userService: UserService, private val accountRepository: AccountRepository,
+    private val cardRepository: CardRepository,
 ) {
 
     @Transactional
@@ -54,18 +57,41 @@ class OperationService(
 
     @Transactional
     fun createTransfer(req: CreateTransferRequest) {
+        val senderAccount = accountService.findAccountById(req.senderAccountId)
+        val sender = senderAccount.user!!
+        val recipient = userService.findUser(req.recipientCard)
+        val recipientCard = cardRepository.findByNumber(req.recipientCard).orElseThrow {
+            ResponseStatusException(HttpStatus.NOT_FOUND, "Card not found")
+        }
+        val extraFields: List<OperationField> = if (req.message == null) listOf() else listOf(
+            OperationField(name = "Сообщение", value = req.message)
+        )
         val accountFromRequest = CreateOperationRequest(
             type = OperationType.EXPENSE,
             amount = req.amount,
-            extraFields = req.extraFieldsFrom,
-            accountId = req.accountIdFrom,
+            extraFields = listOf(
+                OperationField(
+                    name = "Получатель",
+                    value = "${recipient.passport!!.firstName!!} ${recipient.passport!!.lastName!![0]}.",
+                ),
+                OperationField(
+                    name = "Карта получателя",
+                    value = req.recipientCard,
+                )
+            ) + extraFields,
+            accountId = req.senderAccountId,
             category = "Перевод",
         )
         val accountToRequest = CreateOperationRequest(
             type = OperationType.RECEIPT,
             amount = req.amount,
-            extraFields = req.extraFieldsTo,
-            accountId = req.accountIdTo,
+            extraFields = listOf(
+                OperationField(
+                    name = "Отправитель",
+                    value = "${sender.passport!!.firstName!!} ${sender.passport!!.lastName!![0]}.",
+                ),
+            ) + extraFields,
+            accountId = recipientCard.account!!.id!!,
             category = "Перевод",
         )
 
