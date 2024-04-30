@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.server.ResponseStatusException
+import ru.zakat.bankappbackend.dto.PatchCardRequest
 import ru.zakat.bankappbackend.model.Account
 import ru.zakat.bankappbackend.model.Card
 import ru.zakat.bankappbackend.repository.AccountRepository
@@ -48,6 +49,18 @@ class CardService(
     }
 
     fun deleteCard(accountId: Long, cardId: Long) {
+        val card = findCard(accountId, cardId)
+        cardRepository.delete(card)
+    }
+
+    fun patchCard(accountId: Long, cardId: Long, req: PatchCardRequest) {
+        val card = findCard(accountId, cardId)
+        card.blocked = req.blocked
+
+        cardRepository.save(card)
+    }
+
+    private fun findCard(accountId: Long, cardId: Long): Card {
         val account = accountRepository.findById(accountId).orElseThrow {
             ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found")
         }
@@ -58,6 +71,7 @@ class CardService(
         if (card.account != account) {
             throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Account doesn't have this card")
         }
-        cardRepository.delete(card)
+
+        return card
     }
 }

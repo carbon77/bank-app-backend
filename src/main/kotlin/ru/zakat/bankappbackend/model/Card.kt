@@ -3,7 +3,7 @@ package ru.zakat.bankappbackend.model
 import com.fasterxml.jackson.annotation.JsonIgnore
 import jakarta.persistence.*
 import org.hibernate.Hibernate
-import java.util.Date
+import java.util.*
 
 @Entity
 @Table(name = "cards")
@@ -11,6 +11,7 @@ data class Card(
     var number: String? = null,
     val expirationDate: Date? = null,
     val svv: Int? = null,
+    var blocked: Boolean = false,
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "account_id", nullable = false)
