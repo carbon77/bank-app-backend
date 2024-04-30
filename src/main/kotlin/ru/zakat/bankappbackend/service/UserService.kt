@@ -32,14 +32,14 @@ class UserService(
         val user = getAuthorizedUser(auth)
 
         req.email?.let {
-            if (!userRepository.existsByEmailIgnoreCase(req.email)) {
+            if (userRepository.existsByEmailIgnoreCase(req.email)) {
                 throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Email already exists!")
             }
             user.email = req.email
         }
 
         req.phoneNumber?.let {
-            if (!userRepository.existsByPhoneNumber(req.phoneNumber)) {
+            if (userRepository.existsByPhoneNumber(req.phoneNumber)) {
                 throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Phone number already exists!")
             }
             user.phoneNumber = req.phoneNumber
