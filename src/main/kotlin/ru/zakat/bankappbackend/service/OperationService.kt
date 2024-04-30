@@ -7,8 +7,10 @@ import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.server.ResponseStatusException
 import ru.zakat.bankappbackend.dto.CreateOperationRequest
 import ru.zakat.bankappbackend.dto.CreateTransferRequest
+import ru.zakat.bankappbackend.model.Account
 import ru.zakat.bankappbackend.model.operation.Operation
 import ru.zakat.bankappbackend.model.operation.OperationField
+import ru.zakat.bankappbackend.model.operation.OperationStatus
 import ru.zakat.bankappbackend.model.operation.OperationType
 import ru.zakat.bankappbackend.repository.AccountRepository
 import ru.zakat.bankappbackend.repository.CardRepository
@@ -26,12 +28,9 @@ class OperationService(
     private val cardRepository: CardRepository,
 ) {
 
-    @Transactional
+    @Transactional(noRollbackFor = [ResponseStatusException::class])
     fun createOperation(req: CreateOperationRequest) {
         val account = accountService.findAccountById(req.accountId)
-        if (req.type == OperationType.EXPENSE && req.amount >= account.balance!!) {
-            throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Not enough money on the account")
-        }
 
         val category = categoryRepository.findByName(req.category).orElseThrow {
             ResponseStatusException(HttpStatus.NOT_FOUND, "Category not found")
@@ -44,8 +43,31 @@ class OperationService(
             account = account,
             category = category,
             createdAt = Date.from(Instant.now()),
+            status = req.status,
         )
+
+        if (req.type == OperationType.EXPENSE && req.amount >= account.balance!!) {
+            operation.status = OperationStatus.FAILED
+            val fields = (if (operation.extraFields != null) operation.extraFields!! else listOf()) + listOf(
+                OperationField(name = "Причина", value = "Недостаточно средств на счету")
+            )
+            operation.extraFields = fields
+        }
         operationRepository.save(operation)
+
+        if (operation.status === OperationStatus.FAILED) {
+            throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Операция не произошла")
+        }
+        updateBalance(operation, account)
+    }
+
+    private fun updateBalance(
+        operation: Operation,
+        account: Account
+    ) {
+        if (operation.status == OperationStatus.FAILED) {
+            return
+        }
 
         if (operation.type == OperationType.EXPENSE) {
             account.balance = account.balance?.minus(operation.amount!!)
@@ -55,7 +77,7 @@ class OperationService(
         accountRepository.save(account)
     }
 
-    @Transactional
+    @Transactional(noRollbackFor = [ResponseStatusException::class])
     fun createTransfer(req: CreateTransferRequest) {
         val senderAccount = accountService.findAccountById(req.senderAccountId)
         val sender = senderAccount.user!!
@@ -66,10 +88,10 @@ class OperationService(
         val extraFields: List<OperationField> = if (req.message == null) listOf() else listOf(
             OperationField(name = "Сообщение", value = req.message)
         )
-        val accountFromRequest = CreateOperationRequest(
+        val senderRequest = CreateOperationRequest(
             type = OperationType.EXPENSE,
             amount = req.amount,
-            extraFields = listOf(
+            extraFields = extraFields + listOf(
                 OperationField(
                     name = "Получатель",
                     value = "${recipient.passport!!.firstName!!} ${recipient.passport!!.lastName!![0]}.",
@@ -78,25 +100,28 @@ class OperationService(
                     name = "Карта получателя",
                     value = req.recipientCard,
                 )
-            ) + extraFields,
+            ),
             accountId = req.senderAccountId,
             category = "Перевод",
         )
-        val accountToRequest = CreateOperationRequest(
+        createOperation(senderRequest)
+
+        if (req.amount > senderAccount.balance!!) {
+            return
+        }
+        val recipientRequest = CreateOperationRequest(
             type = OperationType.RECEIPT,
             amount = req.amount,
-            extraFields = listOf(
+            extraFields = extraFields + listOf(
                 OperationField(
                     name = "Отправитель",
                     value = "${sender.passport!!.firstName!!} ${sender.passport!!.lastName!![0]}.",
                 ),
-            ) + extraFields,
+            ),
             accountId = recipientCard.account!!.id!!,
             category = "Перевод",
         )
-
-        createOperation(accountFromRequest)
-        createOperation(accountToRequest)
+        createOperation(recipientRequest)
     }
 
     @Transactional(readOnly = true)

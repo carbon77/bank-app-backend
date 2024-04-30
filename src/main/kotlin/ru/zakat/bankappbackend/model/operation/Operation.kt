@@ -18,6 +18,9 @@ data class Operation(
     @Enumerated(EnumType.STRING)
     var type: OperationType? = null,
 
+    @Enumerated(EnumType.STRING)
+    var status: OperationStatus? = null,
+
     var amount: Double? = null,
 
     @Type(JsonType::class)
