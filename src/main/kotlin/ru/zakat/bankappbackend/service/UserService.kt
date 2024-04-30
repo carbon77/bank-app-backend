@@ -31,8 +31,19 @@ class UserService(
     fun patchUser(auth: Authentication, req: PatchUserRequest) {
         val user = getAuthorizedUser(auth)
 
-        user.email = req.email ?: user.email
-        user.phoneNumber = req.phoneNumber ?: user.phoneNumber
+        req.email?.let {
+            if (!userRepository.existsByEmailIgnoreCase(req.email)) {
+                throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Email already exists!")
+            }
+            user.email = req.email
+        }
+
+        req.phoneNumber?.let {
+            if (!userRepository.existsByPhoneNumber(req.phoneNumber)) {
+                throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Phone number already exists!")
+            }
+            user.phoneNumber = req.phoneNumber
+        }
 
         userRepository.save(user)
     }
