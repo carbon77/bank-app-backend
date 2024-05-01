@@ -4,6 +4,7 @@ import org.springframework.security.core.Authentication
 import org.springframework.web.bind.annotation.*
 import ru.zakat.bankappbackend.dto.CreateAccountRequest
 import ru.zakat.bankappbackend.dto.CreateAccountResponse
+import ru.zakat.bankappbackend.dto.PatchAccountRequest
 import ru.zakat.bankappbackend.dto.PatchCardRequest
 import ru.zakat.bankappbackend.model.Account
 import ru.zakat.bankappbackend.service.AccountService
@@ -27,10 +28,16 @@ class AccountController(
         return accountService.create(auth, req)
     }
 
+    @PatchMapping("/{accountId}")
+    fun patchAccount(auth: Authentication, @PathVariable accountId: Long, @RequestBody req: PatchAccountRequest) {
+        accountService.patchAccount(auth, accountId, req)
+    }
+
     @PostMapping("/{accountId}/card")
     fun addCard(auth: Authentication, @PathVariable accountId: Long): Long? {
         return cardService.createRandomCard(accountId)
     }
+
 
     @DeleteMapping("/{accountId}/card/{cardId}")
     fun deleteCard(auth: Authentication, @PathVariable accountId: Long, @PathVariable cardId: Long) {

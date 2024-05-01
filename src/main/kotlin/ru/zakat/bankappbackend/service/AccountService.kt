@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.server.ResponseStatusException
 import ru.zakat.bankappbackend.dto.CreateAccountRequest
 import ru.zakat.bankappbackend.dto.CreateAccountResponse
+import ru.zakat.bankappbackend.dto.PatchAccountRequest
 import ru.zakat.bankappbackend.model.*
 import ru.zakat.bankappbackend.repository.AccountRepository
 import ru.zakat.bankappbackend.utils.generateRandomString
@@ -30,6 +31,26 @@ class AccountService(
     @Transactional(readOnly = true)
     fun getAuthorizedUserAccounts(auth: Authentication): List<Account> {
         return accountRepository.findByUser(userService.getAuthorizedUser(auth))
+    }
+
+    @Transactional
+    fun patchAccount(auth: Authentication, accountId: Long, req: PatchAccountRequest) {
+        val user = userService.getAuthorizedUser(auth)
+        val account = findAccountById(accountId)
+
+        if (account.user?.id !== user.id) {
+            throw ResponseStatusException(HttpStatus.FORBIDDEN)
+        }
+
+        req.name?.let {
+            if (req.name.isEmpty()) {
+                throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Поле name не может быть пустым!")
+            }
+
+            account.name = req.name
+        }
+
+        accountRepository.save(account)
     }
 
     @Transactional
