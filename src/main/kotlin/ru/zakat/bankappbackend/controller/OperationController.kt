@@ -2,13 +2,7 @@ package ru.zakat.bankappbackend.controller
 
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.Authentication
-import org.springframework.web.bind.annotation.CrossOrigin
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import ru.zakat.bankappbackend.dto.CreateOperationRequest
 import ru.zakat.bankappbackend.dto.CreateTransferRequest
 import ru.zakat.bankappbackend.model.operation.Operation
@@ -39,5 +33,15 @@ class OperationController(
             return operationService.findOperationsByAccount(accountId)
         }
         return operationService.findOperationsByUser(auth)
+    }
+
+    @GetMapping("/categories")
+    fun findOperationCategories(auth: Authentication, @RequestParam accountId: Long?): List<Map<String, Any>> {
+        return operationService.getOperationCategories(auth, accountId)
+    }
+
+    @GetMapping("/stats/months")
+    fun findOperationStatsByMonths(auth: Authentication, @RequestParam accountId: Long?): List<Map<String?, Any>> {
+        return operationService.findOperationStatsByMonths(auth, accountId)
     }
 }

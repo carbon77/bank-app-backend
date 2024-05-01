@@ -136,4 +136,23 @@ class OperationService(
         val user = userService.getAuthorizedUser(auth)
         return operationRepository.findByUser(user)
     }
+
+    @Transactional(readOnly = true)
+    fun getOperationCategories(auth: Authentication, accountId: Long?): List<Map<String, Any>> {
+        return when (accountId) {
+            null -> operationRepository.findOperationCategoriesByUser(userService.getAuthorizedUser(auth))
+            else -> operationRepository.findOperationCategoriesByAccount(accountService.findAccountById(accountId))
+        }
+    }
+
+    fun findOperationStatsByMonths(auth: Authentication, accountId: Long?): List<Map<String?, Any>> {
+        return when (accountId) {
+            null -> operationRepository.findOperationTypesTotalGroupedByMonthsAndUser(userService.getAuthorizedUser(auth))
+            else -> operationRepository.findOperationTypesTotalGroupedByMonthsAndAccount(
+                accountService.findAccountById(
+                    accountId
+                )
+            )
+        }
+    }
 }
