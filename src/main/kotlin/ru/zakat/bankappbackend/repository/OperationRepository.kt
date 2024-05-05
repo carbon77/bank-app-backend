@@ -1,49 +1,53 @@
 package ru.zakat.bankappbackend.repository
 
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
+import ru.zakat.bankappbackend.dto.CategoryGroupDto
+import ru.zakat.bankappbackend.dto.OperationMonthDto
 import ru.zakat.bankappbackend.model.Account
 import ru.zakat.bankappbackend.model.User
 import ru.zakat.bankappbackend.model.operation.Operation
+import java.util.*
 
 interface OperationRepository : JpaRepository<Operation, Long> {
-    fun findByAccount(account: Account): List<Operation>
+    fun findByAccount(account: Account, pageable: Pageable): Page<Operation>
 
     @Query("select o from Operation o where o.account.user = ?1")
-    fun findByUser(user: User): List<Operation>
+    fun findByUser(user: User, pageable: Pageable): Page<Operation>
+
 
     @Query(
         "SELECT op.category AS category, op.type AS type, SUM(op.amount) AS totalAmount FROM Operation op " +
-                "WHERE op.status = 'SUCCESS' AND op.account.user = ?1 " +
+                "WHERE op.status = 'SUCCESS' AND " +
+                "((?1 IS NULL AND op.account.user = ?2) OR op.account.id IN ?1) AND " +
+                "cast(op.createdAt AS date) >= COALESCE(?3, cast('01-01-1900' as date)) AND " +
+                "cast(op.createdAt AS date) <= COALESCE(?4, cast('01-01-2200' as date)) " +
                 "GROUP BY op.category, op.type "
     )
-    fun findOperationCategoriesByUser(user: User): List<Map<String, Any>>
+    fun findCategoryGroups(
+        accountIds: List<Long>?,
+        user: User,
+        startDate: Date?,
+        endDate: Date?
+    ): List<CategoryGroupDto>
 
-
-    @Query(
-        "SELECT op.category AS category, op.type AS type, SUM(op.amount) AS totalAmount FROM Operation op " +
-                "WHERE op.status = 'SUCCESS' AND op.account = ?1 " +
-                "GROUP BY op.category, op.type"
-    )
-    fun findOperationCategoriesByAccount(account: Account): List<Map<String, Any>>
 
     @Query(
         "SELECT date_trunc('month', op.createdAt) AS month, " +
                 "op.type AS type, " +
                 "SUM(op.amount) AS total " +
                 "FROM Operation op " +
-                "WHERE op.status = 'SUCCESS' AND op.account.user = ?1 " +
+                "WHERE op.status = 'SUCCESS' AND" +
+                " ((?1 IS NULL AND op.account.user = ?2) OR op.account.id IN ?1) AND " +
+                "cast(op.createdAt AS date) >= COALESCE(?3, cast('01-01-1900' as date)) AND " +
+                "cast(op.createdAt AS date) <= COALESCE(?4, cast('01-01-2200' as date)) " +
                 "GROUP BY month, op.type"
     )
-    fun findOperationTypesTotalGroupedByMonthsAndUser(user: User): List<Map<String?, Any>>
-
-    @Query(
-        "SELECT date_trunc('month', op.createdAt) AS month, " +
-                "op.type AS type, " +
-                "SUM(op.amount) AS total " +
-                "FROM Operation op " +
-                "WHERE op.status = 'SUCCESS' AND op.account = ?1 " +
-                "GROUP BY month, op.type"
-    )
-    fun findOperationTypesTotalGroupedByMonthsAndAccount(account: Account): List<Map<String?, Any>>
+    fun findOperationsGroupedByTypeAndMonth(
+        accountIds: List<Long>?, user: User,
+        startDate: Date?,
+        endDate: Date?
+    ): List<OperationMonthDto>
 }

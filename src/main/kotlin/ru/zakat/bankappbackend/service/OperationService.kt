@@ -1,12 +1,16 @@
 package ru.zakat.bankappbackend.service
 
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.security.core.Authentication
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.server.ResponseStatusException
+import ru.zakat.bankappbackend.dto.CategoryGroupDto
 import ru.zakat.bankappbackend.dto.CreateOperationRequest
 import ru.zakat.bankappbackend.dto.CreateTransferRequest
+import ru.zakat.bankappbackend.dto.OperationMonthDto
 import ru.zakat.bankappbackend.model.Account
 import ru.zakat.bankappbackend.model.operation.Operation
 import ru.zakat.bankappbackend.model.operation.OperationField
@@ -126,33 +130,42 @@ class OperationService(
     }
 
     @Transactional(readOnly = true)
-    fun findOperationsByAccount(accountId: Long): List<Operation> {
+    fun findOperationsByAccount(accountId: Long, pageable: Pageable): Page<Operation> {
         val account = accountService.findAccountById(accountId)
-        return operationRepository.findByAccount(account)
+        return operationRepository.findByAccount(account, pageable)
     }
 
     @Transactional(readOnly = true)
-    fun findOperationsByUser(auth: Authentication): List<Operation> {
+    fun findOperationsByUser(auth: Authentication, pageable: Pageable): Page<Operation> {
         val user = userService.getAuthorizedUser(auth)
-        return operationRepository.findByUser(user)
+        return operationRepository.findByUser(user, pageable)
     }
 
     @Transactional(readOnly = true)
-    fun getOperationCategories(auth: Authentication, accountId: Long?): List<Map<String, Any>> {
-        return when (accountId) {
-            null -> operationRepository.findOperationCategoriesByUser(userService.getAuthorizedUser(auth))
-            else -> operationRepository.findOperationCategoriesByAccount(accountService.findAccountById(accountId))
-        }
+    fun getOperationCategories(
+        auth: Authentication,
+        accountIds: List<Long>?,
+        startDate: Date?,
+        endDate: Date?,
+    ): List<CategoryGroupDto> {
+        return operationRepository.findCategoryGroups(
+            accountIds,
+            userService.getAuthorizedUser(auth),
+            startDate,
+            endDate,
+        )
     }
 
-    fun findOperationStatsByMonths(auth: Authentication, accountId: Long?): List<Map<String?, Any>> {
-        return when (accountId) {
-            null -> operationRepository.findOperationTypesTotalGroupedByMonthsAndUser(userService.getAuthorizedUser(auth))
-            else -> operationRepository.findOperationTypesTotalGroupedByMonthsAndAccount(
-                accountService.findAccountById(
-                    accountId
-                )
-            )
-        }
+    @Transactional(readOnly = true)
+    fun findOperationStatsByMonths(
+        auth: Authentication, accountIds: List<Long>?,
+        startDate: Date?,
+        endDate: Date?
+    ): List<OperationMonthDto> {
+        return operationRepository.findOperationsGroupedByTypeAndMonth(
+            accountIds, userService.getAuthorizedUser(auth),
+            startDate,
+            endDate,
+        )
     }
 }

@@ -2,13 +2,18 @@ package ru.zakat.bankappbackend.controller
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.tags.Tag
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.Authentication
 import org.springframework.web.bind.annotation.*
+import ru.zakat.bankappbackend.dto.CategoryGroupDto
 import ru.zakat.bankappbackend.dto.CreateOperationRequest
 import ru.zakat.bankappbackend.dto.CreateTransferRequest
+import ru.zakat.bankappbackend.dto.OperationMonthDto
 import ru.zakat.bankappbackend.model.operation.Operation
 import ru.zakat.bankappbackend.service.OperationService
+import java.util.*
 
 @RestController
 @RequestMapping("/api/operations")
@@ -32,20 +37,30 @@ class OperationController(
     }
 
     @GetMapping
-    fun findByUserOrAccount(auth: Authentication, @RequestParam accountId: Long?): List<Operation> {
+    fun findByUserOrAccount(auth: Authentication, @RequestParam accountId: Long?, pageable: Pageable): Page<Operation> {
         if (accountId != null) {
-            return operationService.findOperationsByAccount(accountId)
+            return operationService.findOperationsByAccount(accountId, pageable)
         }
-        return operationService.findOperationsByUser(auth)
+        return operationService.findOperationsByUser(auth, pageable)
     }
 
-    @GetMapping("/categories")
-    fun findOperationCategories(auth: Authentication, @RequestParam accountId: Long?): List<Map<String, Any>> {
-        return operationService.getOperationCategories(auth, accountId)
+    @GetMapping("/stats/categories")
+    fun findOperationCategories(
+        auth: Authentication,
+        @RequestParam accountIds: List<Long>?,
+        @RequestParam startDate: Date?,
+        @RequestParam endDate: Date?,
+    ): List<CategoryGroupDto> {
+        return operationService.getOperationCategories(auth, accountIds, startDate, endDate)
     }
 
     @GetMapping("/stats/months")
-    fun findOperationStatsByMonths(auth: Authentication, @RequestParam accountId: Long?): List<Map<String?, Any>> {
-        return operationService.findOperationStatsByMonths(auth, accountId)
+    fun findOperationStatsByMonths(
+        auth: Authentication,
+        @RequestParam accountIds: List<Long>?,
+        @RequestParam startDate: Date?,
+        @RequestParam endDate: Date?,
+    ): List<OperationMonthDto> {
+        return operationService.findOperationStatsByMonths(auth, accountIds, startDate, endDate)
     }
 }
