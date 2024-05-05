@@ -1,5 +1,7 @@
 package ru.zakat.bankappbackend.controller
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
+import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.data.repository.query.Param
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.Authentication
@@ -15,6 +17,8 @@ import ru.zakat.bankappbackend.service.UserService
 
 @RestController
 @RequestMapping("/api/users")
+@SecurityRequirement(name = "Authorization")
+@Tag(name = "Пользователи")
 @CrossOrigin("*")
 class UsersController(
     private val userService: UserService,

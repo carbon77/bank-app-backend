@@ -23,6 +23,13 @@ spring:
     init:
       mode: always
 
+springdoc:
+  swagger-ui:
+    path: /api/docs
+
+logging:
+  level:
+    org.springframework.security: DEBUG
 
 app:
   security:

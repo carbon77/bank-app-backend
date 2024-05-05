@@ -33,6 +33,9 @@ class SecurityConfig(
             cors { disable() }
             authorizeRequests {
                 authorize("/api/auth/**", permitAll)
+                authorize("/api/docs/**", permitAll)
+                authorize("/api/swagger-ui/**", permitAll)
+                authorize("/v3/api-docs/**", permitAll)
                 authorize({ it.method == HttpMethod.OPTIONS.name() }, permitAll)
                 authorize({ it.dispatcherType == DispatcherType.ERROR }, permitAll)
                 authorize(anyRequest, authenticated)

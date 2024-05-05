@@ -1,5 +1,7 @@
 package ru.zakat.bankappbackend.controller
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
+import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.Authentication
 import org.springframework.web.bind.annotation.*
@@ -10,6 +12,8 @@ import ru.zakat.bankappbackend.service.OperationService
 
 @RestController
 @RequestMapping("/api/operations")
+@SecurityRequirement(name = "Authorization")
+@Tag(name = "Операции")
 @CrossOrigin("*")
 class OperationController(
     private val operationService: OperationService,

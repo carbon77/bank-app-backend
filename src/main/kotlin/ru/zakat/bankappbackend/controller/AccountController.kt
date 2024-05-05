@@ -1,5 +1,7 @@
 package ru.zakat.bankappbackend.controller
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
+import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.security.core.Authentication
 import org.springframework.web.bind.annotation.*
 import ru.zakat.bankappbackend.dto.CreateAccountRequest
@@ -12,6 +14,8 @@ import ru.zakat.bankappbackend.service.CardService
 
 @RestController
 @RequestMapping("/api/account")
+@SecurityRequirement(name = "Authorization")
+@Tag(name = "Счета и карты")
 @CrossOrigin("*")
 class AccountController(
     private val accountService: AccountService,
