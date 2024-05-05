@@ -46,7 +46,7 @@ class OperationService(
             status = req.status,
         )
 
-        if (req.type == OperationType.EXPENSE && req.amount >= account.balance!!) {
+        if (req.type == OperationType.EXPENSE && req.amount > account.balance!!) {
             operation.status = OperationStatus.FAILED
             val fields = (if (operation.extraFields != null) operation.extraFields!! else listOf()) + listOf(
                 OperationField(name = "Причина", value = "Недостаточно средств на счету")
