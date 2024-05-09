@@ -130,18 +130,6 @@ class OperationService(
     }
 
     @Transactional(readOnly = true)
-    fun findOperationsByAccount(accountId: Long, pageable: Pageable): Page<Operation> {
-        val account = accountService.findAccountById(accountId)
-        return operationRepository.findByAccount(account, pageable)
-    }
-
-    @Transactional(readOnly = true)
-    fun findOperationsByUser(auth: Authentication, pageable: Pageable): Page<Operation> {
-        val user = userService.getAuthorizedUser(auth)
-        return operationRepository.findByUser(user, pageable)
-    }
-
-    @Transactional(readOnly = true)
     fun getOperationCategories(
         auth: Authentication,
         accountIds: List<Long>?,
@@ -166,6 +154,25 @@ class OperationService(
             accountIds, userService.getAuthorizedUser(auth),
             startDate,
             endDate,
+        )
+    }
+
+    @Transactional(readOnly = true)
+    fun findOperations(
+        auth: Authentication,
+        accountIds: List<Long>?,
+        pageable: Pageable,
+        startDate: Date?,
+        endDate: Date?,
+        operationType: OperationType?,
+    ): Page<Operation> {
+        return operationRepository.findOperations(
+            accountIds,
+            userService.getAuthorizedUser(auth),
+            pageable,
+            startDate,
+            endDate,
+            operationType
         )
     }
 }

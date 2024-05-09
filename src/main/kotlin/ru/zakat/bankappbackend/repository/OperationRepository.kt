@@ -6,16 +6,28 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import ru.zakat.bankappbackend.dto.CategoryGroupDto
 import ru.zakat.bankappbackend.dto.OperationMonthDto
-import ru.zakat.bankappbackend.model.Account
 import ru.zakat.bankappbackend.model.User
 import ru.zakat.bankappbackend.model.operation.Operation
+import ru.zakat.bankappbackend.model.operation.OperationType
 import java.util.*
 
 interface OperationRepository : JpaRepository<Operation, Long> {
-    fun findByAccount(account: Account, pageable: Pageable): Page<Operation>
-
-    @Query("select o from Operation o where o.account.user = ?1")
-    fun findByUser(user: User, pageable: Pageable): Page<Operation>
+    @Query(
+        "SELECT op FROM Operation op " +
+                "WHERE ((?1 IS NULL AND op.account.user = ?2) OR op.account.id IN ?1) AND " +
+                "cast(op.createdAt AS date) >= COALESCE(?3, cast('01-01-1900' as date)) AND " +
+                "cast(op.createdAt AS date) <= COALESCE(?4, cast('01-01-2200' as date)) AND " +
+                "(?5 IS NULL OR op.type = ?5) " +
+                "ORDER BY op.createdAt DESC"
+    )
+    fun findOperations(
+        accountIds: List<Long>?,
+        user: User,
+        pageable: Pageable,
+        startDate: Date?,
+        endDate: Date?,
+        type: OperationType?,
+    ): Page<Operation>
 
 
     @Query(

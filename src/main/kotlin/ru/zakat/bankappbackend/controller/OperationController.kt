@@ -12,6 +12,7 @@ import ru.zakat.bankappbackend.dto.CreateOperationRequest
 import ru.zakat.bankappbackend.dto.CreateTransferRequest
 import ru.zakat.bankappbackend.dto.OperationMonthDto
 import ru.zakat.bankappbackend.model.operation.Operation
+import ru.zakat.bankappbackend.model.operation.OperationType
 import ru.zakat.bankappbackend.service.OperationService
 import java.util.*
 
@@ -37,11 +38,15 @@ class OperationController(
     }
 
     @GetMapping
-    fun findByUserOrAccount(auth: Authentication, @RequestParam accountId: Long?, pageable: Pageable): Page<Operation> {
-        if (accountId != null) {
-            return operationService.findOperationsByAccount(accountId, pageable)
-        }
-        return operationService.findOperationsByUser(auth, pageable)
+    fun findOperations(
+        auth: Authentication,
+        pageable: Pageable,
+        @RequestParam accountIds: List<Long>?,
+        @RequestParam startDate: Date?,
+        @RequestParam endDate: Date?,
+        @RequestParam type: OperationType?,
+    ): Page<Operation> {
+        return operationService.findOperations(auth, accountIds, pageable, startDate, endDate, type);
     }
 
     @GetMapping("/stats/categories")

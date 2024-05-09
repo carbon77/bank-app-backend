@@ -1,6 +1,7 @@
 package ru.zakat.bankappbackend.auth
 
 import io.jsonwebtoken.ExpiredJwtException
+import io.jsonwebtoken.MalformedJwtException
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
@@ -40,6 +41,9 @@ class JwtAuthenticationFilter(
             jwtService.extractUsername(jwt)
         } catch (e: ExpiredJwtException) {
             response.sendError(HttpServletResponse.SC_GONE, "Token expired!")
+            return
+        } catch (e: MalformedJwtException) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Malformed token!")
             return
         }
 
