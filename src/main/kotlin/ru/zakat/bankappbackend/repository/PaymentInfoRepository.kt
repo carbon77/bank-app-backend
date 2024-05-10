@@ -1,4 +1,4 @@
-package ru.zakat.bankappbackend.repository;
+package ru.zakat.bankappbackend.repository
 
 import org.springframework.data.jpa.repository.JpaRepository
 import ru.zakat.bankappbackend.model.operation.OperationCategory
@@ -8,4 +8,5 @@ import java.util.Optional
 interface PaymentInfoRepository : JpaRepository<PaymentInfo, Long> {
 
     fun findByCategory(category: OperationCategory): Optional<PaymentInfo>
+    fun existsByCategory(category: OperationCategory): Boolean
 }

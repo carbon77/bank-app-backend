@@ -9,7 +9,6 @@ data class PaymentField(
     val minLength: Int = 0,
     val maxValue: Double? = null,
     val minValue: Double = 0.0,
-    val prefix: String? = null,
     val suffix: String? = null,
     val choices: List<String>? = null,
 )
