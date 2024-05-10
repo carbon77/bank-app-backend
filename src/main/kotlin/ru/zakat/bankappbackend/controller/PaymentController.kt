@@ -1,5 +1,6 @@
 package ru.zakat.bankappbackend.controller
 
+import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.web.bind.annotation.*
@@ -15,6 +16,7 @@ class PaymentController(
     private val paymentInfoService: PaymentInfoService,
 ) {
 
+    @Operation(summary = "Получение описания платежа по категории")
     @GetMapping("/info/{categoryName}")
     fun findByCategoryName(@PathVariable categoryName: String): PaymentInfo {
         return paymentInfoService.findByCategory(categoryName)

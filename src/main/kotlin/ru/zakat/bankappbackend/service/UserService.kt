@@ -48,8 +48,8 @@ class UserService(
         userRepository.save(user)
     }
 
-    fun findUser(bankNumber: String): User {
-        return userRepository.findByCardNumber(cardNumber = bankNumber).orElseThrow {
+    fun findUser(cardNumber: String): User {
+        return userRepository.findByCardNumber(cardNumber).orElseThrow {
             ResponseStatusException(HttpStatus.NOT_FOUND, "User not found")
         }
     }

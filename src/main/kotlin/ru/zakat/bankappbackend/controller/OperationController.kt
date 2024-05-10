@@ -25,18 +25,21 @@ class OperationController(
     private val operationService: OperationService,
 ) {
 
+    @io.swagger.v3.oas.annotations.Operation(summary = "Создать операцию")
     @PostMapping
     fun create(@RequestBody req: CreateOperationRequest): ResponseEntity<Any> {
         operationService.createOperation(req)
         return ResponseEntity.noContent().build()
     }
 
+    @io.swagger.v3.oas.annotations.Operation(summary = "Совершить перевод")
     @PostMapping("/transfer")
     fun createTransfer(@RequestBody req: CreateTransferRequest): ResponseEntity<Any> {
         operationService.createTransfer(req)
         return ResponseEntity.noContent().build()
     }
 
+    @io.swagger.v3.oas.annotations.Operation(summary = "Найти операции по фильтрам с пагинацией")
     @GetMapping
     fun findOperations(
         auth: Authentication,
@@ -46,9 +49,10 @@ class OperationController(
         @RequestParam endDate: Date?,
         @RequestParam type: OperationType?,
     ): Page<Operation> {
-        return operationService.findOperations(auth, accountIds, pageable, startDate, endDate, type);
+        return operationService.findOperations(auth, accountIds, pageable, startDate, endDate, type)
     }
 
+    @io.swagger.v3.oas.annotations.Operation(summary = "Найти операции, сгруппированные по категориям")
     @GetMapping("/stats/categories")
     fun findOperationCategories(
         auth: Authentication,
@@ -59,6 +63,7 @@ class OperationController(
         return operationService.getOperationCategories(auth, accountIds, startDate, endDate)
     }
 
+    @io.swagger.v3.oas.annotations.Operation(summary = "Найти операции, сгруппированные по месяцам")
     @GetMapping("/stats/months")
     fun findOperationStatsByMonths(
         auth: Authentication,

@@ -1,5 +1,6 @@
 package ru.zakat.bankappbackend.controller
 
+import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.CrossOrigin
@@ -19,6 +20,7 @@ import ru.zakat.bankappbackend.service.AuthService
 class AuthController(
     private val authService: AuthService,
 ) {
+    @Operation(summary = "Регистрация пользователя")
     @PostMapping("/register")
     fun register(
         @RequestBody request: RegisterRequest,
@@ -27,6 +29,7 @@ class AuthController(
         return ResponseEntity.ok(mapOf("message" to "Success"))
     }
 
+    @Operation(summary = "Вход в систему")
     @PostMapping("/login")
     fun login(
         @RequestBody request: LoginRequest,
