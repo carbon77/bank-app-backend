@@ -19,6 +19,7 @@ open class Account {
 
     var name: String? = null
     var balance: Double? = null
+    var closed: Boolean? = null
 
     @Enumerated(EnumType.STRING)
     var accountType: AccountType? = null

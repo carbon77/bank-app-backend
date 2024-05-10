@@ -50,6 +50,10 @@ class AccountService(
             account.name = req.name
         }
 
+        req.closed?.let {
+            account.closed = req.closed
+        }
+
         accountRepository.save(account)
     }
 
@@ -62,6 +66,7 @@ class AccountService(
         account.balance = 0.0
         account.name = req.name
         account.createdAt = Date.from(Instant.now())
+        account.closed = false
         setExtraFields(account, req)
 
         accountRepository.save(account)
