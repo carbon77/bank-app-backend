@@ -13,7 +13,7 @@ interface UserRepository : JpaRepository<User, Long> {
     fun existsByPhoneNumber(phoneNumber: String): Boolean
 
     @Query(
-        value = "SELECT c.account.user FROM Card c WHERE c.number = ?1"
+        value = "SELECT c.account.user FROM Card c WHERE c.number = ?1 AND c.account.closed = FALSE"
     )
     fun findByCardNumber(cardNumber: String): Optional<User>
 }

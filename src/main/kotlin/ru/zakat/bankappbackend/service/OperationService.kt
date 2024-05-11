@@ -109,9 +109,10 @@ class OperationService(
             category = "Перевод",
             status = if (recipientCard.blocked) OperationStatus.FAILED else OperationStatus.SUCCESS,
         )
+        val operationFailed = req.amount > senderAccount.balance!! || recipientCard.blocked
         createOperation(senderRequest)
 
-        if (req.amount > senderAccount.balance!! || recipientCard.blocked) {
+        if (operationFailed) {
             return
         }
         val recipientRequest = CreateOperationRequest(

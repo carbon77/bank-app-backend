@@ -3,15 +3,9 @@ package ru.zakat.bankappbackend.controller
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.tags.Tag
-import org.springframework.data.repository.query.Param
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.Authentication
-import org.springframework.web.bind.annotation.CrossOrigin
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PatchMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import ru.zakat.bankappbackend.dto.PatchUserRequest
 import ru.zakat.bankappbackend.model.User
 import ru.zakat.bankappbackend.service.UserService
@@ -41,7 +35,7 @@ class UsersController(
     @Operation(summary = "Получение имени пользователя по номеру карты")
     @GetMapping("/findByCard")
     fun findUser(
-        @Param("bankNumber") cardNumber: String,
+        @RequestParam cardNumber: String,
     ): User {
         return userService.findUser(cardNumber)
     }
