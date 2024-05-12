@@ -6,8 +6,10 @@ import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.Authentication
 import org.springframework.web.bind.annotation.*
+import ru.zakat.bankappbackend.dto.ChangePasswordRequest
 import ru.zakat.bankappbackend.dto.PatchUserRequest
 import ru.zakat.bankappbackend.model.User
+import ru.zakat.bankappbackend.service.AuthService
 import ru.zakat.bankappbackend.service.UserService
 
 @RestController
@@ -17,6 +19,7 @@ import ru.zakat.bankappbackend.service.UserService
 @CrossOrigin("*")
 class UsersController(
     private val userService: UserService,
+    private val authService: AuthService,
 ) {
 
     @Operation(summary = "Получение информации об авторизованном пользователе")
@@ -38,5 +41,14 @@ class UsersController(
         @RequestParam cardNumber: String,
     ): User {
         return userService.findUser(cardNumber)
+    }
+
+    @Operation(summary = "Замена пароля")
+    @PatchMapping("/changePassword")
+    fun changePassword(
+        auth: Authentication,
+        @RequestBody req: ChangePasswordRequest
+    ) {
+        authService.changePassword(auth, req)
     }
 }

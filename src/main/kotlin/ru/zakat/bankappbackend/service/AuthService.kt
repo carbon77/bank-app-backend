@@ -4,9 +4,12 @@ import org.springframework.dao.DuplicateKeyException
 import org.springframework.http.HttpStatus
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.Authentication
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.server.ResponseStatusException
+import ru.zakat.bankappbackend.dto.ChangePasswordRequest
 import ru.zakat.bankappbackend.dto.auth.AuthenticationResponse
 import ru.zakat.bankappbackend.dto.auth.LoginRequest
 import ru.zakat.bankappbackend.dto.auth.RegisterRequest
@@ -24,6 +27,7 @@ class AuthService(
     private val authenticationManager: AuthenticationManager,
 ) {
 
+    @Transactional(noRollbackFor = [ResponseStatusException::class])
     fun register(request: RegisterRequest) {
         val user = User(
             email = request.email,
@@ -63,5 +67,21 @@ class AuthService(
         val user = userService.loadUserByUsername(request.email)
         val jwtToken = jwtService.generateToken(user)
         return AuthenticationResponse(jwtToken)
+    }
+
+    @Transactional(noRollbackFor = [ResponseStatusException::class])
+    fun changePassword(auth: Authentication, req: ChangePasswordRequest) {
+        val user = userService.getAuthorizedUser(auth)
+
+        if (!passwordEncoder.matches(req.password, user.password)) {
+            throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Passwords don't match")
+        }
+
+        if (req.newPassword.length < 8) {
+            throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Min password length is 8")
+        }
+
+        user.setPassword(passwordEncoder.encode(req.newPassword))
+        userRepository.save(user)
     }
 }

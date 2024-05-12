@@ -36,6 +36,10 @@ data class User (
     @JsonIgnore
     override fun getPassword(): String? = password
 
+    fun setPassword(encodedPassword: String) {
+        password = encodedPassword
+    }
+
     @JsonIgnore
     override fun getUsername(): String? = email
 
