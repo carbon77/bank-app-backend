@@ -8,9 +8,9 @@ spring:
     name: bank-app-backend
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/bank-app
-    username: postgres
-    password: admin
+    url: ${BANK_APP_DB_URL:jdbc:postgresql://localhost:5432/bank-app}
+    username: ${BANK_APP_DB_USERNAME:postgres}
+    password: ${BANK_APP_DB_PASSWORD:admin}
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -34,12 +34,8 @@ springdoc:
   swagger-ui:
     path: /api/docs
 
-logging:
-  level:
-    org.springframework.security: DEBUG
-
 app:
   security:
     jwt:
-      expiration: 86400000 # 1 day
-      secretKey: 09B63EE1A5DD4AB080610DDA313625F51E64D38BF4710421F95C447EA0CA46C4
+      expiration: ${BANK_APP_JWT_EXPIRE:86400000} # 1 day
+      secretKey: ${BANK_APP_JWT_SECRET:09B63EE1A5DD4AB080610DDA313625F51E64D38BF4710421F95C447EA0CA46C4}
