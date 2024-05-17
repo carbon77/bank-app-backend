@@ -86,8 +86,14 @@ CREATE TABLE IF NOT EXISTS public.operations
 
 CREATE TABLE IF NOT EXISTS public.payment_infos
 (
-    payment_info_id serial primary key NOT NULL,
-    category_id     bigint unique      NOT NULL references operation_categories (category_id),
-    fields          jsonb
+    payment_info_id    serial primary key NOT NULL,
+    category_id        bigint unique      NOT NULL references operation_categories (category_id),
+    fields             jsonb,
+    bank_name          character varying(255),
+    bik                character varying(255),
+    correction_account character varying(255),
+    inn                character varying(255),
+    number             character varying(255),
+    minAmount          double precision
 );
 
