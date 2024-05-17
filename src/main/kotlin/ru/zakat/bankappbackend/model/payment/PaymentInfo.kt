@@ -4,6 +4,7 @@ import io.hypersistence.utils.hibernate.type.json.JsonType
 import jakarta.persistence.*
 import org.hibernate.Hibernate
 import org.hibernate.annotations.Type
+import ru.zakat.bankappbackend.model.AccountDetails
 import ru.zakat.bankappbackend.model.operation.OperationCategory
 
 @Entity
@@ -21,6 +22,9 @@ data class PaymentInfo(
     @Type(JsonType::class)
     @Column(columnDefinition = "jsonb")
     var fields: List<PaymentField>? = null,
+
+    @Embedded
+    var accountDetails: AccountDetails? = null
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
