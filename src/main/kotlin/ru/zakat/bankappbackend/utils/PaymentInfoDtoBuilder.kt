@@ -8,14 +8,16 @@ import ru.zakat.bankappbackend.model.payment.PaymentField
 class PaymentInfoDtoBuilder {
     var id: Int = 0
     var categoryName: String = ""
-    var fields: MutableList<PaymentField> = mutableListOf()
-    var accountDetails: AccountDetails = AccountDetails()
+    var minAmount: Double = 0.0
+    private var fields: MutableList<PaymentField> = mutableListOf()
+    private var accountDetails: AccountDetails = AccountDetails()
 
     fun build(): PaymentInfoDto {
         return PaymentInfoDto(
             categoryName = categoryName,
             fields = fields,
             details = accountDetails,
+            minAmount = minAmount,
         )
     }
 

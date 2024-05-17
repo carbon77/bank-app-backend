@@ -15,6 +15,8 @@ data class PaymentInfo(
     @Column(name = "payment_info_id")
     var id: Long? = null,
 
+    var minAmount: Double? = null,
+
     @OneToOne(cascade = [CascadeType.MERGE], optional = false, orphanRemoval = true)
     @JoinColumn(name = "category_id", nullable = false)
     var category: OperationCategory? = null,

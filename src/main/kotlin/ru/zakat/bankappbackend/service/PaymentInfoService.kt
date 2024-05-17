@@ -24,6 +24,7 @@ class PaymentInfoService(
         val paymentInfos = paymentInfoDtoList {
             paymentInfo {
                 categoryName = "Мобильная связь"
+                minAmount = 30.0
                 details {
                     number = "14184109292489437547"
                     bankName = "Сбербанк"
@@ -46,6 +47,7 @@ class PaymentInfoService(
 
             paymentInfo {
                 categoryName = "Интернет"
+                minAmount = 100.0
                 details {
                     number = "98657413476573498765"
                     bankName = "Газпромбанк"
@@ -70,6 +72,7 @@ class PaymentInfoService(
 
             paymentInfo {
                 categoryName = "Газ"
+                minAmount = 100.0
                 details {
                     number = "65439821764328756789"
                     bankName = "Альфа-Банк"
@@ -93,6 +96,7 @@ class PaymentInfoService(
 
             paymentInfo {
                 categoryName = "Электроэнергия"
+                minAmount = 100.0
                 details {
                     number = "45769832476548392811"
                     bankName = "Тинькофф Банк"
@@ -116,6 +120,7 @@ class PaymentInfoService(
 
             paymentInfo {
                 categoryName = "Водоснабжение"
+                minAmount = 100.0
                 details {
                     number = "27384910283746587493"
                     bankName = "ВТБ"
@@ -139,6 +144,7 @@ class PaymentInfoService(
 
             paymentInfo {
                 categoryName = "Транспортная карта"
+                minAmount = 100.0
                 details {
                     number = "98476215348021563830"
                     bankName = "Росбанк"
@@ -156,6 +162,7 @@ class PaymentInfoService(
 
             paymentInfo {
                 categoryName = "Штрафы ГИБДД"
+                minAmount = 500.0
                 details {
                     number = "12345678901234567890"
                     bankName = "Райффайзенбанк"
@@ -185,6 +192,7 @@ class PaymentInfoService(
 
             paymentInfo {
                 categoryName = "По реквизитам"
+                minAmount = 100.0
                 field {
                     name = "Номер счёта"
                     type = PaymentFieldType.STRING
@@ -214,8 +222,8 @@ class PaymentInfoService(
         }
 
         try {
-            paymentInfos.forEach { (categoryName, details, fields) ->
-                create(categoryName, details, fields)
+            paymentInfos.forEach { (categoryName, minAmount, details, fields) ->
+                create(categoryName, minAmount, details, fields)
             }
         } catch (e: ResponseStatusException) {
             println(e)
@@ -225,7 +233,12 @@ class PaymentInfoService(
     }
 
     @Transactional
-    fun create(categoryName: String, details: AccountDetails, fields: List<PaymentField>): PaymentInfo {
+    fun create(
+        categoryName: String,
+        minAmount: Double,
+        details: AccountDetails,
+        fields: List<PaymentField>
+    ): PaymentInfo {
         val category = operationCategoryRepository.findByName(categoryName).orElseThrow {
             ResponseStatusException(HttpStatus.NOT_FOUND, "Категория не найдена : $categoryName")
         }
@@ -237,7 +250,8 @@ class PaymentInfoService(
         val paymentInfo = PaymentInfo(
             category = category,
             fields = fields,
-            accountDetails = details
+            accountDetails = details,
+            minAmount = minAmount,
         )
         paymentInfoRepository.save(paymentInfo)
         return paymentInfo
