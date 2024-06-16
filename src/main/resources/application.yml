@@ -19,7 +19,6 @@ spring:
     hibernate:
       ddl-auto: update
 
-
   mvc:
     format:
       date: iso
@@ -30,12 +29,12 @@ spring:
     init:
       mode: always
 
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8083/realms/bank-app
+
 springdoc:
   swagger-ui:
     path: /api/docs
-
-app:
-  security:
-    jwt:
-      expiration: ${BANK_APP_JWT_EXPIRE:86400000} # 1 day
-      secretKey: ${BANK_APP_JWT_SECRET:09B63EE1A5DD4AB080610DDA313625F51E64D38BF4710421F95C447EA0CA46C4}

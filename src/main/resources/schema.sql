@@ -1,31 +1,10 @@
-CREATE TABLE IF NOT EXISTS public.users
-(
-    user_id      serial NOT NULL,
-    email        character varying(255),
-    password     character varying(255),
-    phone_number character varying(255)
-);
-
-CREATE TABLE IF NOT EXISTS public.passports
-(
-    birthday        timestamp(6) without time zone,
-    issue_date      timestamp(6) without time zone,
-    user_id         bigint primary key NOT NULL references users (user_id),
-    department_code character varying(255),
-    first_name      character varying(255),
-    last_name       character varying(255),
-    number          character varying(255),
-    patronimic      character varying(255),
-    series          character varying(255)
-);
-
 CREATE TABLE IF NOT EXISTS public.accounts
 (
     account_id         serial primary key NOT NULL,
     balance            double precision,
     closed             boolean,
     created_at         date,
-    user_id            bigint             NOT NULL references users (user_id),
+    user_id            uuid               NOT NULL,
     account_type       character varying(255),
     bank_name          character varying(255),
     bik                character varying(255),

@@ -28,7 +28,7 @@ class OperationService(
     private val accountService: AccountService,
     private val operationRepository: OperationRepository,
     private val categoryRepository: OperationCategoryRepository,
-    private val userService: UserService, private val accountRepository: AccountRepository,
+    private val accountRepository: AccountRepository,
     private val cardRepository: CardRepository,
 ) {
 
@@ -84,8 +84,6 @@ class OperationService(
     @Transactional(noRollbackFor = [ResponseStatusException::class])
     fun createTransfer(req: CreateTransferRequest) {
         val senderAccount = accountService.findAccountById(req.senderAccountId)
-        val sender = senderAccount.user!!
-        val recipient = userService.findUser(req.recipientCard)
         val recipientCard = cardRepository.findByNumber(req.recipientCard).orElseThrow {
             ResponseStatusException(HttpStatus.NOT_FOUND, "Card not found")
         }
@@ -96,10 +94,6 @@ class OperationService(
             type = OperationType.EXPENSE,
             amount = req.amount,
             extraFields = extraFields + listOf(
-                OperationField(
-                    name = "Получатель",
-                    value = "${recipient.passport!!.firstName!!} ${recipient.passport!!.lastName!![0]}.",
-                ),
                 OperationField(
                     name = "Карта получателя",
                     value = req.recipientCard,
@@ -121,7 +115,7 @@ class OperationService(
             extraFields = extraFields + listOf(
                 OperationField(
                     name = "Отправитель",
-                    value = "${sender.passport!!.firstName!!} ${sender.passport!!.lastName!![0]}.",
+                    value = "${senderAccount.userId}",
                 ),
             ),
             accountId = recipientCard.account!!.id!!,
@@ -139,7 +133,7 @@ class OperationService(
     ): List<CategoryGroupDto> {
         return operationRepository.findCategoryGroups(
             accountIds,
-            userService.getAuthorizedUser(auth),
+            auth.name,
             startDate,
             endDate,
         )
@@ -152,7 +146,7 @@ class OperationService(
         endDate: Date?
     ): List<OperationMonthDto> {
         return operationRepository.findOperationsGroupedByTypeAndMonth(
-            accountIds, userService.getAuthorizedUser(auth),
+            accountIds, auth.name,
             startDate,
             endDate,
         )
@@ -169,7 +163,7 @@ class OperationService(
     ): Page<Operation> {
         return operationRepository.findOperations(
             accountIds,
-            userService.getAuthorizedUser(auth),
+            auth.name,
             pageable,
             startDate,
             endDate,

@@ -29,11 +29,7 @@ open class Account {
 
     @Embedded
     var accountDetails: AccountDetails? = null
-
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "user_id", nullable = false)
-    @JsonIgnore
-    var user: User? = null
+    var userId: String? = null
 
     @OneToMany(mappedBy = "account", orphanRemoval = true)
     var cards: MutableList<Card> = mutableListOf()

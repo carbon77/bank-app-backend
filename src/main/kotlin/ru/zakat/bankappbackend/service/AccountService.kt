@@ -17,7 +17,6 @@ import java.util.*
 @Service
 class AccountService(
     private val accountRepository: AccountRepository,
-    private val userService: UserService,
     private val cardService: CardService,
 ) {
 
@@ -30,15 +29,14 @@ class AccountService(
 
     @Transactional(readOnly = true)
     fun getAuthorizedUserAccounts(auth: Authentication): List<Account> {
-        return accountRepository.findByUser(userService.getAuthorizedUser(auth))
+        return accountRepository.findByUserId(auth.name)
     }
 
     @Transactional
     fun patchAccount(auth: Authentication, accountId: Long, req: PatchAccountRequest) {
-        val user = userService.getAuthorizedUser(auth)
         val account = findAccountById(accountId)
 
-        if (account.user?.id !== user.id) {
+        if (account.userId !== auth.name) {
             throw ResponseStatusException(HttpStatus.FORBIDDEN)
         }
 
@@ -62,7 +60,7 @@ class AccountService(
         val account = generateAccountByType(req.accountType)
         account.accountType = req.accountType
         account.accountDetails = generateAccountDetails()
-        account.user = userService.getAuthorizedUser(auth)
+        account.userId = auth.name
         account.balance = 0.0
         account.name = req.name
         account.createdAt = Date.from(Instant.now())

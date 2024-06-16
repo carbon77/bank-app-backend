@@ -1,5 +1,20 @@
+version: '3.8'
 services:
-  postgres:
+  keycloak:
+    image: 'bitnami/keycloak'
+    ports:
+      - "8083:8080"
+    environment:
+      - KEYCLOAK_CREATE_ADMIN_USER=true
+      - KEYCLOAK_DATABASE_NAME=bank-app
+      - KEYCLOAK_DATABASE_PASSWORD=admin
+      - KEYCLOAK_DATABASE_USER=postgres
+      - KEYCLOAK_ADMIN_PASSWORD=admin
+      - KEYCLOAK_ADMIN=admin
+    depends_on:
+      - postgresql
+
+  postgresql:
     image: 'postgres:latest'
     environment:
       - 'POSTGRES_DB=bank-app'
@@ -12,10 +27,18 @@ services:
     image: 'adminer:latest'
     restart: 'always'
     ports:
-      - '8080:8080'
+      - '8082:8080'
     depends_on:
-      - 'postgres'
+      - postgresql
     environment:
       - 'ADMINER_DESIGN=hydra'
       - 'ADMINER_DEFAULT_SERVER=postgres'
       - 'ADMINER_PLUGINS=tables-filter'
+
+  web:
+    image: nginx:1.27.0-alpine
+    ports:
+      - "8080:80"
+    volumes:
+      - ./static:/var/www/html/static
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
