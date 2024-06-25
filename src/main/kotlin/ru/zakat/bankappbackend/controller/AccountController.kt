@@ -12,6 +12,7 @@ import ru.zakat.bankappbackend.dto.PatchCardRequest
 import ru.zakat.bankappbackend.model.Account
 import ru.zakat.bankappbackend.service.AccountService
 import ru.zakat.bankappbackend.service.CardService
+import java.security.Principal
 
 @RestController
 @RequestMapping("/api/account")
@@ -51,6 +52,12 @@ class AccountController(
     @DeleteMapping("/{accountId}/card/{cardId}")
     fun deleteCard(auth: Authentication, @PathVariable accountId: Long, @PathVariable cardId: Long) {
         cardService.deleteCard(accountId, cardId)
+    }
+
+    @Operation(summary = "Получение имени пользователя по карте")
+    @GetMapping("/findByCard")
+    fun getUserFullNameByCard(principal: Principal, @RequestParam cardNumber: String): Map<String, String> {
+        return cardService.getUserFullNameByCard(cardNumber)
     }
 
     @Operation(summary = "Редактирование карты")

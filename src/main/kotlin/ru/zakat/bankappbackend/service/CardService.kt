@@ -48,16 +48,29 @@ class CardService(
         return card
     }
 
+    @Transactional
     fun deleteCard(accountId: Long, cardId: Long) {
         val card = findCard(accountId, cardId)
         cardRepository.delete(card)
     }
 
+    @Transactional
     fun patchCard(accountId: Long, cardId: Long, req: PatchCardRequest) {
         val card = findCard(accountId, cardId)
         card.blocked = req.blocked
 
         cardRepository.save(card)
+    }
+
+    @Transactional
+    fun getUserFullNameByCard(cardNumber: String): Map<String, String> {
+        val card = cardRepository.findByNumber(cardNumber).orElseThrow {
+            ResponseStatusException(HttpStatus.NOT_FOUND, "Card not found")
+        }
+        return mapOf(
+            "firstName" to card.account!!.userFirstName!!,
+            "lastName" to card.account!!.userLastName!!,
+        )
     }
 
     private fun findCard(accountId: Long, cardId: Long): Card {

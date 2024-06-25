@@ -5,5 +5,7 @@ import ru.zakat.bankappbackend.model.AccountType
 data class CreateAccountRequest(
     var accountType: AccountType,
     var name: String,
-    var extraFields: Map<String, Any>? = null
+    var extraFields: Map<String, Any>? = null,
+    var userFirstName: String,
+    var userLastName: String,
 )

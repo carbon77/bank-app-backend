@@ -1,7 +1,6 @@
 package ru.zakat.bankappbackend.model
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo
-import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.ObjectIdGenerators
 import jakarta.persistence.*
 import org.hibernate.Hibernate
@@ -30,6 +29,8 @@ open class Account {
     @Embedded
     var accountDetails: AccountDetails? = null
     var userId: String? = null
+    var userFirstName: String? = null
+    var userLastName: String? = null
 
     @OneToMany(mappedBy = "account", orphanRemoval = true)
     var cards: MutableList<Card> = mutableListOf()

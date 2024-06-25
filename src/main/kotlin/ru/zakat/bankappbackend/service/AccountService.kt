@@ -36,7 +36,7 @@ class AccountService(
     fun patchAccount(auth: Authentication, accountId: Long, req: PatchAccountRequest) {
         val account = findAccountById(accountId)
 
-        if (account.userId !== auth.name) {
+        if (!account.userId.equals(auth.name)) {
             throw ResponseStatusException(HttpStatus.FORBIDDEN)
         }
 
@@ -65,6 +65,8 @@ class AccountService(
         account.name = req.name
         account.createdAt = Date.from(Instant.now())
         account.closed = false
+        account.userFirstName = req.userFirstName
+        account.userLastName = req.userLastName
         setExtraFields(account, req)
 
         accountRepository.save(account)

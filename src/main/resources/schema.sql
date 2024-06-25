@@ -5,6 +5,8 @@ CREATE TABLE IF NOT EXISTS public.accounts
     closed             boolean,
     created_at         date,
     user_id            uuid               NOT NULL,
+    user_first_name character varying(255),
+    user_last_name character varying(255),
     account_type       character varying(255),
     bank_name          character varying(255),
     bik                character varying(255),
